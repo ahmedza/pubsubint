@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<!--<groupId>com.gcaa.nm</groupId> -->
+	<artifactId>nm-subscription-ec-model</artifactId>
+	<!--<version>20.5.0.RELEASE</version> -->
+	<!--version>0.0.1-SNAPSHOT</version-->
+	<description>This project contains the XJC generation from eurocontrol wsdls.</description>
+	<name>Eurocontrol NM WSDL Models</name>
+	<packaging>jar</packaging>
+
+	<parent>
+		<groupId>com.gcaa.nm</groupId>
+		<artifactId>nm-subscription-parent</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+
+			<dependencies>
+		        <dependency>
+		            <groupId>org.springframework.boot</groupId>
+		            <artifactId>spring-boot-starter</artifactId>
+		        </dependency>
+		        </dependencies>
+
+	<profiles>
+		<profile>
+			<id>dev-generate</id>
+			<!-- mvn clean compile -P dev-generate -->
+			<dependencies>
+		        <dependency>
+		            <groupId>org.springframework.boot</groupId>
+		            <artifactId>spring-boot-starter</artifactId>
+		        </dependency>
+		
+		         <dependency>
+		            <groupId>org.springframework.boot</groupId>
+		            <artifactId>spring-boot-starter-web</artifactId>
+		        </dependency>
+			</dependencies>
+			
+			<build>
+				<plugins>
+					<!-- tag::wsdl[] -->
+					<plugin> 
+						<groupId>org.jvnet.jaxb2.maven2</groupId>
+						<artifactId>maven-jaxb2-plugin</artifactId> 
+						<version>0.13.1</version> 
+						<executions> 
+							<execution> 
+								<goals> 
+									<goal>generate</goal>
+								</goals>
+							</execution> 
+						</executions> 
+						<configuration> 
+							<schemaLanguage>WSDL</schemaLanguage> 
+							<generatePackage>com.gcaa.nm.eurocontrol</generatePackage> 
+							<schemas> 
+								<schema>
+									<url> D:/work/projects/workspce/nm/nm-wss-client/src/main/resources/schema/PublishsubscribeServices_PREOPS_20.5.0.wsdl</url> 
+								</schema> 
+							</schemas> 
+						</configuration> 
+					</plugin>
+					<!-- end::wsdl[] -->
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
+<!-- 	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build> -->
+</project>
