@@ -1,10 +1,18 @@
 spring:
   datasource:
-    url : jdbc:mysql://localhost:3306/dev_db?autoReconnect=true&useSSL=true
+    url : jdbc:mysql://localhost:3306/nm_dev?autoReconnect=true&useSSL=true
     username : root
     password : root
     testWhileIdle : true
     validationQuery : SELECT 1
+  activemq:
+    broker-url: tcp://127.0.0.1:5672
+    user: admin
+    password: adimn
+    pool:
+      enabled: true
+      max-connections: 50
+
 
   jpa:
     show-sql : true
@@ -28,12 +36,11 @@ logging:
 gcaa:
   security:
     ssl:
-      key-store: xyz.jks
-      key-store-password: *******
-      trust-store: xyz.jks
-      trust-store-password: *******
+      key-store: D:/work/projects/workspce/nm/cefi/cefitest/CC0000009204_500.jks
+      key-store-password: Qq3zlmvD0MTT
+      trust-store: D:/work/projects/workspce/nm/cefi/cefitest/CC0000009204_500.jks
+      trust-store-password: Qq3zlmvD0MTT
       endpoint-url: https://www.b2b.preops.nm.eurocontrol.int/B2B_PREOPS/gateway/spec/20.5.0
-      
   nm:
     listener:
       initDelay: 3000

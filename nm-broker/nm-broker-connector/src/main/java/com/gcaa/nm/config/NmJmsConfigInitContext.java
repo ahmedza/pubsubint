@@ -1,20 +1,12 @@
 package com.gcaa.nm.config;
 
-import javax.jms.ConnectionFactory;
-import javax.jms.JMSException;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
-
-import com.gcaa.nm.consumer.QpidConsumer;
 
 @Configuration
+//@Profile("dev") //java -jar myapp.jar --spring.profiles.active=profile1,profile2
 public class NmJmsConfigInitContext {
-	
-	@Bean
+		
+	/*@Bean
 	public InitialContext initialContext() throws NamingException{
 		InitialContext context = null;
 		try {
@@ -31,7 +23,9 @@ public class NmJmsConfigInitContext {
 		ConnectionFactory nmConnectionfactory = null;
 		try {
 			nmConnectionfactory = (ConnectionFactory) initialContext.lookup("nmConnectionfactory");
+			System.out.println("--*-*-*-*-*-*-*-*-*-*-*-*-*-*-*- CREATED NM CONNECITON -*-*-*-*-*-*-*-*-*-*-*--*-*-*-*-*-*-*-*");
 		} catch (NamingException e) {
+			System.out.println("--*-*-*-*-*-*-*-*-*-*-*-*-*-*-*- NNNOTTTT CREATED NM CONNECITON -*-*-*-*-*-*-*-*-*-*-*--*-*-*-*-*-*-*-*");
 			e.printStackTrace();
 		}
 		return nmConnectionfactory;
@@ -41,5 +35,5 @@ public class NmJmsConfigInitContext {
 	public QpidConsumer messageConsumer(){
 		return new QpidConsumer();
 	}
-
+*/
 }
