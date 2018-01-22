@@ -30,6 +30,9 @@ public class NmSubscriptionManagerImpl implements NmSubscriptionManager {
 	@Override
 	public void syncNmSubscriptions() {
 		List<Subscription> subscriptions = nmWssClient.getSubscriptionList(null);
+		if(null == subscriptions){
+			return ;
+		}
 		syncLocalSubscriptions(subscriptions);
 	}
 
@@ -38,10 +41,13 @@ public class NmSubscriptionManagerImpl implements NmSubscriptionManager {
 		for (Subscription subscription : subscriptions) {
 			if (subscription.getState().equals(SubscriptionStatus.PAUSED.getCode())
 					|| subscription.getState().equals(SubscriptionStatus.SUSPENDED_PAUSE.getCode())) {
+				logger.debug("Syncing - Resuming in Euro NMOC. Subscription = {}",subscription.getUuid());
 				resumeAndUpdateStatus(subscription);
-			} else if (subscription.getState().equals(SubscriptionStatus.DELETED.getCode())) {
+			} else if (subscription.getState().equals(SubscriptionStatus.DELETED.getCode()) || subscription.getState().equals(SubscriptionStatus.SUSPENDED_DELETE.getCode())) {
+				logger.debug("Syncing - Disable Deleted subscription {}",subscription.getUuid());
 				disableDeletedSubscriptions(subscription);
 			} else if (subscription.getState().equals(SubscriptionStatus.ACTIVE.getCode())) {
+				logger.debug("Syncing - Updating Active Status for subscription {}",subscription.getUuid());
 				updateSubscriptionStateToActive(subscription);
 			}
 		}
@@ -61,7 +67,7 @@ public class NmSubscriptionManagerImpl implements NmSubscriptionManager {
 		subEntity.getIsActive()){
 			return;
 		}
-
+		logger.info("Syncing - Activating in database, subscription {}",subscription.getUuid());
 		subEntity.setSubscriptionStatus(SubscriptionStatus.ACTIVE);
 		subEntity.setIsActive(true);
 		subRepo.save(subEntity);
@@ -77,7 +83,7 @@ public class NmSubscriptionManagerImpl implements NmSubscriptionManager {
 		if(subEntity.getSubscriptionStatus() == SubscriptionStatus.DELETED && !subEntity.getIsActive()){
 			return;
 		}
-		
+		logger.info("Syncing - Disabling deleted, in database, subscription {}",subscription.getUuid());
 		subEntity.setSubscriptionStatus(SubscriptionStatus.DELETED);
 		subEntity.setIsActive(false);
 		subRepo.save(subEntity);
@@ -87,6 +93,7 @@ public class NmSubscriptionManagerImpl implements NmSubscriptionManager {
 	public void resumeAndUpdateStatus(Subscription subscription) {
 
 		SubscriptionEntity subEntity = subRepo.findByUuidEquals(subscription.getUuid());
+		
 		if (null == subEntity) {
 			subEntity = creatEntityFromNmSubscription(subscription);
 		} else if (!subEntity.getIsActive()) {
@@ -94,12 +101,12 @@ public class NmSubscriptionManagerImpl implements NmSubscriptionManager {
 					"Failed in trying to resume a Paused NM subscription {}. Subscription is not active in system. Activate subscription in system before sending resume request. This may result cause the NM subscription to be PAUSED by NM Admin as messages could get expired in NM queue", subscription.getUuid());
 			return;
 		}
-		
 		nmWssClient.resumeSubscription(subscription.getUuid());
 
 		if(subEntity.getId() != null && subEntity.getSubscriptionStatus() == SubscriptionStatus.ACTIVE){
 			return;
 		}
+		logger.info("Syncing - Resumed in database and Eurocontrol, subscription {}",subscription.getUuid());
 		subEntity.setSubscriptionStatus(SubscriptionStatus.ACTIVE);
 		subEntity.setIsActive(true);
 		subRepo.save(subEntity);

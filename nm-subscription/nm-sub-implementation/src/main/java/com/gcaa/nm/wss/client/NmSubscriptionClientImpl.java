@@ -12,6 +12,7 @@ import javax.xml.bind.JAXBElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ws.client.core.support.WebServiceGatewaySupport;
+import org.springframework.ws.soap.SoapMessageCreationException;
 
 import com.gcaa.nm.eurocontrol._2_5_0.FlightPlanMessageFilter;
 import com.gcaa.nm.eurocontrol._2_5_0.FlightSetDefinitionElement;
@@ -37,22 +38,21 @@ public class NmSubscriptionClientImpl extends WebServiceGatewaySupport implement
 		if(null != states){
 			subsList.getStates().getItem().addAll(states);
 		}
+		JAXBElement<SubscriptionListReply> subListResponseObj = null;
+		try{
+			subListResponseObj = (JAXBElement<SubscriptionListReply>)getWebServiceTemplate().marshalSendAndReceive(subsList);
+		}catch(SoapMessageCreationException ssajException){
+			lOGGER.error("NM List Subscription - Request - SOAP Error: \n "+ssajException.getMessage());
+			return null;
+		}
 		
-		
-		JAXBElement<SubscriptionListReply> subListResponseObj = (JAXBElement<SubscriptionListReply>)getWebServiceTemplate().marshalSendAndReceive(subsList);
 		if(null != subListResponseObj){
-			System.out.println("Response Received");
+			lOGGER.debug("Response Received");
 			SubscriptionListReply subListResponse = (SubscriptionListReply) subListResponseObj.getValue();
 			if(null != subListResponse.getData() && null != subListResponse.getData().getSubscriptions()){
 				return subListResponse.getData().getSubscriptions().getItem();
-/*				for(Subscription subscrip : subListResponse.getData().getSubscriptions().getItem()){
-					String uuid = subscrip.getUuid();
-					System.out.println("Subscription UUID = " + uuid);
-					System.out.println("Subscription Status = " + subscrip.getState());
-				}*/
 			}
 		}
-		
 		return null;
 	}
 	
@@ -80,7 +80,7 @@ public class NmSubscriptionClientImpl extends WebServiceGatewaySupport implement
 		subsList.setUuid(subscriptionUuid);
 		Object subDeleteionResponse = getWebServiceTemplate().marshalSendAndReceive(subsList);
 		if(null != subDeleteionResponse){
-			System.out.println("Response Received");
+			lOGGER.debug("Response Received");
 		}
 	}
 
@@ -92,12 +92,12 @@ public class NmSubscriptionClientImpl extends WebServiceGatewaySupport implement
 				.marshalSendAndReceive(subsCreateReq);
 
 		if (null != subListResponseObj) {
-			System.out.println("Response Received");
+			lOGGER.debug("Response Received");
 			SubscriptionCreationReply subCreateResponse = (SubscriptionCreationReply) subListResponseObj.getValue();
 			if (null != subCreateResponse.getData() && null != subCreateResponse.getData().getSubscription()) {
 				Subscription subscrip = subCreateResponse.getData().getSubscription();
 				String uuid = subscrip.getUuid();
-				System.out.println("Subscription UUID = " + uuid);
+				lOGGER.debug("Subscription UUID = " + uuid);
 
 			}
 		}
