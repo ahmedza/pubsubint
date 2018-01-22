@@ -27,7 +27,7 @@ import com.gcaa.nm.wss.client.NmSubscriptionClientImpl;
 @Configuration
 public class NmSubscriptionConfiguration {
 
-	@Value("${gcaa.security.ssl.endpoint-url}")
+	@Value("${gcaa.nm.endpoint-url}")
 	private String url;
 
 	@Value("${gcaa.security.ssl.key-store}")
