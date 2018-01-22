@@ -1,13 +1,13 @@
 spring:
   datasource:
-    url : jdbc:mysql://localhost:3306/dev_db?autoReconnect=true&useSSL=true
+    url : jdbc:mysql://localhost:3306/nm_dev?autoReconnect=true&useSSL=true
     username : root
     password : root
     testWhileIdle : true
     validationQuery : SELECT 1
 
   jpa:
-    show-sql : true
+    show-sql : false
     hibernate:
       ddl-auto : update
       naming-strategy : org.hibernate.cfg.ImprovedNamingStrategy
@@ -20,24 +20,45 @@ server:
 
 logging:
   level:
-    hello: INFO
     org:
-      springframework:
-        ws: TRACE
+#      apache:
+#        activemq: DEBUG
+      springframework: INFO
+#        ws:
+#          client:
+#            MessageTracing: INFO
+    com:
+      gcaa:
+        nm: INFO
+#          connector: INFO
 
 gcaa:
   security:
     ssl:
-      key-store: xyz.jks
-      key-store-password: *******
-      trust-store: xyz.jks
-      trust-store-password: *******
-      endpoint-url: https://www.b2b.preops.nm.eurocontrol.int/B2B_PREOPS/gateway/spec/20.5.0
-      
+      key-store: D:/work/projects/workspce/nm/cefi/cefitest/CC0000009204_500.jks
+      key-store-password: Qq3zlmvD0MTT
+      trust-store: D:/work/projects/workspce/nm/cefi/cefitest/CC0000009204_500.jks
+      trust-store-password: Qq3zlmvD0MTT
+# Local GCAA BRoker Properties
+  broker:
+    url: amqp://localhost:5672
+    user: swimgw
+    password: swimgw!23
+    flight-plans-queue: gcaanm-msg-q
+    insert-flight-plans-in-topic: false
+    msg-time-to-live: 21600000
+    qos-enabled: true
+# Eurocontrol NM Settings BRoker Properties
   nm:
+    endpoint-url: https://www.b2b.preops.nm.eurocontrol.int/B2B_PREOPS/gateway/spec/20.5.0
+    broker-url: amqps://publish.preops.nm.eurocontrol.int:5671
+    ## Delay for listener. Listener checks for new Queue connecitons from database.
     listener:
       initDelay: 3000
       fixedDelay: 10000
+    ## Delay for subscription sync manager. Subscription in local database are synced for statuses with Eurocontrol NM.  
     subchecker:
       initDelay: 300
       fixedDelay: 30000
+    ## RecoveryInterval defines the wait between two retries of JMS connection. (Reconnection retries)      
+    jmsrecovery-interval: 50000
