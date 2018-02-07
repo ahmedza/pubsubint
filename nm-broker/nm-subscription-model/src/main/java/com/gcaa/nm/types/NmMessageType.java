@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 public enum NmMessageType {
 
-	TECHNICAL("T"),BUSINESS("B"), OTHER("O");
+	TECHNICAL_MESSAGE("T"),BUSINESS_MESSAGE("B"), OTHER("O");
 	
 	private String code;
 

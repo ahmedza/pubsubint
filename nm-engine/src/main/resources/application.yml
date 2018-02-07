@@ -1,11 +1,14 @@
 spring:
   datasource:
-    url : jdbc:mysql://localhost:3306/nm_dev?autoReconnect=true&useSSL=true
-    username : root
-    password : root
+#    url : jdbc:mysql://localhost:3306/nm_dev?autoReconnect=true&useSSL=true
+#    username : psi
+#    password : ENC(o6fO7kgcwEst+jS6eyeVuj3sC0jVJv/2)
     testWhileIdle : true
     validationQuery : SELECT 1
-
+    initialize: false
+  profiles:
+    active:
+      - development
   jpa:
     show-sql : false
     hibernate:
@@ -33,25 +36,21 @@ logging:
 #          connector: INFO
 
 gcaa:
-  security:
-    ssl:
-      key-store: D:/work/projects/workspce/nm/cefi/cefitest/CC0000009204_500.jks
-      key-store-password: Qq3zlmvD0MTT
-      trust-store: D:/work/projects/workspce/nm/cefi/cefitest/CC0000009204_500.jks
-      trust-store-password: Qq3zlmvD0MTT
 # Local GCAA BRoker Properties
   broker:
     url: amqp://localhost:5672
     user: swimgw
-    password: swimgw!23
-    flight-plans-queue: gcaanm-msg-q
-    insert-flight-plans-in-topic: false
-    msg-time-to-live: 21600000
+    password: ENC(dDhScXm4vGoXRxNB/Nm0xfgEw4AMMycX)
+    house-keeping-days: 10
+#    flight-plans-queue: gcaanm-msg-q
+#    flight-data-queue: gcaa.nm.flight.data.q
+    insert-flight-plans-in-topic: false # Set to true if gcaa.nm.* destinations are a topic
+#    msg-time-to-live: 21600000 # 6 hours time to live for a mesage published in GCAA Flight-Plan/DATA Queue
     qos-enabled: true
-# Eurocontrol NM Settings BRoker Properties
+  # Eurocontrol NM Settings BRoker Properties
   nm:
     endpoint-url: https://www.b2b.preops.nm.eurocontrol.int/B2B_PREOPS/gateway/spec/20.5.0
-    broker-url: amqps://publish.preops.nm.eurocontrol.int:5671
+    broker-url: amqps://publish.preops.nm.eurocontrol.int:5671?transport.trustAll=false&transport.verifyHost=true&transport.keyAlias=1
     ## Delay for listener. Listener checks for new Queue connecitons from database.
     listener:
       initDelay: 3000
@@ -62,3 +61,22 @@ gcaa:
       fixedDelay: 30000
     ## RecoveryInterval defines the wait between two retries of JMS connection. (Reconnection retries)      
     jmsrecovery-interval: 50000
+
+---   
+spring : 
+  datasource:
+      url : jdbc:mysql://localhost:3306/nm_dev?autoReconnect=true&useSSL=true
+      username : root
+      password : ENC(l+u41FEqZu+hxR+hQPjqrA==)
+  profiles: development
+
+logging:
+  level:
+    com.gcaa.adi: debug 
+---
+spring : 
+  datasource:
+      url : jdbc:mysql://localhost:3306/adi_prod?autoReconnect=true&useSSL=true
+      username : psi
+      password : psi_prod
+  profiles: production

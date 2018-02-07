@@ -1,5 +1,12 @@
 package com.gcaa.nm.config;
 
+import java.io.IOException;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
+
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
 import javax.naming.InitialContext;
@@ -21,32 +28,36 @@ import com.gcaa.nm.consumer.QpidConsumer;
 @Configuration
 public class NmJmsConfigInitContext {
 	private static final Logger logger = LoggerFactory.getLogger(NmJmsConfigInitContext.class);
+
+
 	@Bean
 	@Primary
-	public ConnectionFactory nmConnectionFactory(InitialContext initialContext) throws JMSException{
+	public ConnectionFactory nmConnectionFactory(InitialContext initialContext)
+			throws JMSException, NoSuchAlgorithmException, KeyManagementException, UnrecoverableKeyException, KeyStoreException, CertificateException, IOException {
 		ConnectionFactory nmConnectionfactory = null;
 		try {
 			nmConnectionfactory = (ConnectionFactory) initialContext.lookup("nmConnectionfactory");
-			logger.debug("--*-*-*-*-*-*-*-*-*-*-*-*-*-*-*- CREATED NM CONNECITON -*-*-*-*-*-*-*-*-*-*-*--*-*-*-*-*-*-*-*");
+			logger.debug(
+					"*-*- CREATED NM CONNECITON -*-*");
 		} catch (NamingException e) {
-			logger.error("*-*-*-*- NNNOTTTT CREATED NM CONNECITON -*-*-*\n"+e.getMessage());
+			logger.error("*-*- NNNOTTTT CREATED NM CONNECITON -*-*\n" + e.getMessage());
 		}
 		return nmConnectionfactory;
 	}
 
 	@Bean
-	public QpidConsumer messageConsumer(){
+	public QpidConsumer messageConsumer() {
 		return new QpidConsumer();
 	}
 
-
 	@Value("${gcaa.nm.jmsrecovery-interval}")
 	private Long jmsRecInterval;
-	
+
 	@Bean
 	@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 	@Lazy
-	public DefaultMessageListenerContainer nmMessageContainer(ConnectionFactory nmConnectionFactory, QpidConsumer messageConsumer, String destinationName){
+	public DefaultMessageListenerContainer nmMessageContainer(ConnectionFactory nmConnectionFactory,
+			QpidConsumer messageConsumer, String destinationName) {
 		DefaultMessageListenerContainer listenerContainer = new DefaultMessageListenerContainer();
 		listenerContainer.setConcurrency("5-20");
 		listenerContainer.setRecoveryInterval(jmsRecInterval);
@@ -56,5 +67,4 @@ public class NmJmsConfigInitContext {
 		logger.info("Starting DefaultMessageListenerContainer for Queue {}", destinationName);
 		return listenerContainer;
 	}
-	
 }

@@ -1,0 +1,76 @@
+<configuration scan="true" scanPeriod="30 seconds">
+	<include resource="org/springframework/boot/logging/logback/base.xml" />
+	<logger name="org.springframework.web" level="INFO" />
+
+	<!-- <property name="application.properties"></property> -->
+
+<!-- 	<appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
+			</pattern>
+		</encoder>
+	</appender> -->
+
+	<appender name="INFO-FILE"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<!-- <file>logs/adi-log.log</file> -->
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- daily rollover -->
+			<fileNamePattern>logs/psi-info-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+			<timeBasedFileNamingAndTriggeringPolicy
+				class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<!-- or whenever the file size reaches 50MB -->
+				<maxFileSize>50MB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+			<!-- keep 30 days' worth of history -->
+			<maxHistory>1</maxHistory>
+			<totalSizeCap>3GB</totalSizeCap>
+		</rollingPolicy>
+		<encoder>
+			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
+			</pattern>
+		</encoder>
+	</appender>
+	
+	<appender name="DEBUG-FILE"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<!-- <file>logs/adi-log.log</file> -->
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- daily rollover -->
+			<fileNamePattern>logs/psi-debug-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+			<timeBasedFileNamingAndTriggeringPolicy
+				class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<!-- or whenever the file size reaches 50MB -->
+				<maxFileSize>50MB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+			<!-- keep 30 days' worth of history -->
+			<maxHistory>1</maxHistory>
+			<totalSizeCap>3GB</totalSizeCap>
+		</rollingPolicy>
+		<encoder>
+			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
+			</pattern>
+		</encoder>
+	</appender>
+
+	<logger name="com.gcaa.nm" level="INFO" additivity="false">
+		<appender-ref ref="INFO-FILE" />
+	</logger>
+	
+	<logger name="com.ulisesbocchio.jasypt.encryptor" additivity="false">
+		<appender-ref ref="DEBUG-FILE"></appender-ref>
+	</logger>
+	
+		<logger name="com.gcaa.nm" level="DEBUG" additivity="false">
+		<appender-ref ref="DEBUG-FILE" />
+	</logger>
+
+	<logger name="org.springframework" level="INFO" additivity="false">
+		<appender-ref ref="INFO-FILE" />
+	</logger>
+
+	<!-- root level="INFO">
+		<appender-ref ref="INFO-FILE" />
+	</root-->
+
+</configuration>

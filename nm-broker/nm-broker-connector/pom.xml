@@ -13,7 +13,7 @@
 	<parent>
 		<groupId>com.gcaa.nm</groupId>
 		<artifactId>nm-broker-parent</artifactId>
-		<version>2.0.1-RC</version>
+		<version>2.1.0-RC</version>
 	</parent>
 
 	<dependencies>
@@ -57,6 +57,18 @@
 			<artifactId>scala-library</artifactId>
 			<version>2.11.0</version>
 		</dependency>
+		<dependency>
+			<groupId>com.gcaa.commons</groupId>
+			<artifactId>gcaa-commons</artifactId>
+			<version>${gcaa.commons.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.github.ulisesbocchio</groupId>
+			<artifactId>jasypt-spring-boot-starter</artifactId>
+			<version>1.18</version>
+		</dependency>
+
 	</dependencies>
 
 	<!-- build> <plugins> <plugin> <groupId>org.springframework.boot</groupId> 

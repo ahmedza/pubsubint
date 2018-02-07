@@ -3,13 +3,13 @@
 
   <artifactId>gcaa-nm-commons</artifactId>
 
-  <name>NM Subscription Models</name>
+  <name>GCAA NM Common Models</name>
   <description>Model project to be used for nm broker and subscription project</description>
   
   <parent>
   	<groupId>com.gcaa.nm</groupId>
   	<artifactId>nm-broker-parent</artifactId>
-  	<version>2.0.1-RC</version>
+  	<version>2.1.0-RC</version>
   </parent>
   
   <dependencies>

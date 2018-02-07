@@ -2,7 +2,6 @@ package com.gcaa.nm.connector;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
 import javax.jms.ConnectionFactory;
 
@@ -10,26 +9,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.core.env.PropertiesPropertySource;
-import org.springframework.core.env.StandardEnvironment;
 import org.springframework.jms.listener.DefaultMessageListenerContainer;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import com.gcaa.nm.NmConnectorApplication;
-import com.gcaa.nm.config.adhoc.QueueListenerConfig;
 import com.gcaa.nm.consumer.QpidConsumer;
 import com.gcaa.nm.entity.SubscriptionEntity;
 import com.gcaa.nm.repository.SubscriptionRepository;
 import com.gcaa.nm.types.SubscriptionStatus;
 
 @Component
-public class NmListenerInitializer implements /* CommandLineRunner, */ApplicationContextAware {
+public class NmListenerInitializer implements ApplicationContextAware {
 
 	private static final Logger logger = LoggerFactory.getLogger(NmListenerInitializer.class);
 
@@ -38,8 +30,8 @@ public class NmListenerInitializer implements /* CommandLineRunner, */Applicatio
 
 	@Autowired
 	private QpidConsumer messageConsumer;
-	
-	private ApplicationContext applicationContext;	
+
+	private ApplicationContext applicationContext;
 
 	Map<String, DefaultMessageListenerContainer> listenerHandles = new HashMap<String, DefaultMessageListenerContainer>();
 
@@ -124,47 +116,27 @@ public class NmListenerInitializer implements /* CommandLineRunner, */Applicatio
 			listenerHandles.put(sub.getQueueName(), dmlc);
 		} else {
 
-			/*DefaultMessageListenerContainer dmlc = (DefaultMessageListenerContainer) ctx.getBean("nmMessageContainer");*/
 			if (null != dmlc && !dmlc.isRunning()) {
 				logger.debug("Sub={}, IsActive = {}, IsRunning={}", sub.getName(), dmlc.isActive(), dmlc.isRunning());
 				logger.info("Reconnecting queue={}", sub.getQueueName());
-				dmlc.start(); 
+				dmlc.start();
 				dmlc.afterPropertiesSet();
 			}
 		}
 	}
-	
+
 	@Autowired
 	private ConnectionFactory nmConnectionFactory;
 
 	private DefaultMessageListenerContainer startMessageListener(String destinationName) {
 		DefaultMessageListenerContainer dmlc = null;
-		
-		dmlc = (DefaultMessageListenerContainer)applicationContext.getBean("nmMessageContainer", nmConnectionFactory, messageConsumer, destinationName);
+
+		dmlc = (DefaultMessageListenerContainer) applicationContext.getBean("nmMessageContainer", nmConnectionFactory,
+				messageConsumer, destinationName);
 
 		return dmlc;
-		/*AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
-
-		StandardEnvironment env = new StandardEnvironment();
-		Properties props = new Properties();
-		props.setProperty("nm.destination", destinationName);
-		props.setProperty("nm.jmsrecovery-interval", jmsRecInterval);
-
-		PropertiesPropertySource pps = new PropertiesPropertySource("systemProperties", props);
-		env.getPropertySources().addLast(pps);
-
-		context.setDisplayName("NM-Q-CTXT-" + destinationName);
-		context.setId("NM-Q-CTXT-" + destinationName);
-		;
-		context.setEnvironment(env);
-		context.register(QueueListenerConfig.class);
-
-		context.setParent(applicationContext);
-		context.refresh();
-		return context;*/
 	}
 
-	// @Override
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 		this.applicationContext = applicationContext;
 	}

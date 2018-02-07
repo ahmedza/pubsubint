@@ -1,7 +1,5 @@
 package com.gcaa.nm.consumer;
 
-import java.util.Date;
-
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.Session;
@@ -10,33 +8,42 @@ import javax.jms.TextMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jms.JmsException;
 import org.springframework.jms.listener.SessionAwareMessageListener;
 import org.springframework.stereotype.Component;
 
-import com.gcaa.nm.entity.NmMessageEntity;
-import com.gcaa.nm.repository.NmMessageRepository;
-import com.gcaa.nm.types.NmMessageType;
-
-
+import com.gcaa.nm.manager.BrokerMessageManager;
 
 @Component
-public class QpidConsumer implements SessionAwareMessageListener<Message>{
+public class QpidConsumer implements SessionAwareMessageListener<Message> {
 
 	private static final Logger logger = (Logger) LoggerFactory.getLogger(QpidConsumer.class);
+
 	@Autowired
-	private NmMessageRepository msgRepo;
-	
+	private BrokerMessageManager msgManager;
+
 	@Override
 	public void onMessage(Message message, Session session) throws JMSException {
-		if(message instanceof TextMessage){
-			logger.debug("New Message received= {}", ((TextMessage)message).getText().substring(0,200));
-			
-			NmMessageEntity msg = new NmMessageEntity();
-			msg.setMessageType(((TextMessage) message).getText().substring(0,100).contains("TechnicalMessage") ? NmMessageType.TECHNICAL : NmMessageType.BUSINESS);
-			msg.setReceivedDate(new Date());
-			msg.setReceivedMessage(((TextMessage) message).getText());
-			msgRepo.save(msg);
+		if (null == message) {
 			return;
+		}
+		if (message instanceof TextMessage) {
+			try {
+				if(((TextMessage) message).getText().length() >= 50){
+					logger.debug("New Message received= {}", ((TextMessage) message).getText().substring(0, 32));
+				}else{
+					logger.debug("Non-Text Message received= {}", ((TextMessage) message).getText().substring(0, ((TextMessage) message).getText().length()));
+				}
+				msgManager.processReceivedMessage( ((TextMessage) message).getText());
+			} catch (JmsException jmsExcep) {
+				logger.error("Error in Message. CorrelationId {}. \nExecption= {}", message.getJMSCorrelationID(),
+						jmsExcep.getMessage());
+				throw jmsExcep;
+			} catch (Exception ex) {
+				logger.error("Error in Message. CorrelationId {}. \nExecption= {}", message.getJMSCorrelationID(),
+						ex.getMessage());
+				throw ex;
+			}
 		}
 	}
 }

@@ -6,9 +6,8 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
-@ComponentScan(basePackages={"com.gcaa.nm",})
+@ComponentScan(basePackages={"com.gcaa.nm"})
 @EnableScheduling
-/*@ImportResource({"classpath:\\META-INF\\spring\\jms\\jms-init-context.xml"})*/
 public class NmConnectorApplication {
 
 	public static void main(String[] args) {

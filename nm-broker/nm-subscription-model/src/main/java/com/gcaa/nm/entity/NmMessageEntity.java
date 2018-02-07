@@ -19,6 +19,11 @@ public class NmMessageEntity {
  	private Long Id;
 	private String receivedMessage;
 	private NmMessageType messageType;
+	private int messageTimeToLiveMins;
+	
+/*	 @OneToOne(cascade=CascadeType.ALL)
+	 @JoinColumn(name = "id")
+	private NmSubscriptionTypeEntity subscriptionType;*/
 	private Date receivedDate;
 	private Date processedDate;
 	
@@ -51,5 +56,17 @@ public class NmMessageEntity {
 	}
 	public void setProcessedDate(Date processedDate) {
 		this.processedDate = processedDate;
+	}
+/*	public NmSubscriptionTypeEntity getSubscriptionType() {
+		return subscriptionType;
+	}
+	public void setSubscriptionType(NmSubscriptionTypeEntity subscriptionType) {
+		this.subscriptionType = subscriptionType;
+	}*/
+	public int getMessageTimeToLiveMins() {
+		return messageTimeToLiveMins;
+	}
+	public void setMessageTimeToLiveMins(int messageTimeToLiveMins) {
+		this.messageTimeToLiveMins = messageTimeToLiveMins;
 	}
 }
