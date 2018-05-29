@@ -65,31 +65,3 @@ gcaa:
 jasypt:
   encryptor:
     algorithm: PBEWithMD5AndDES
-    
-#    flight-plans-queue: gcaanm-msg-q
-#    flight-data-queue: gcaa.nm.flight.data.q
-#    msg-time-to-live: 21600000 # 6 hours time to live for a mesage published in GCAA Flight-Plan/DATA Queue
-#javax:
-#  net:
-#      ssl:
-#        keyStore: D:/work/projects/workspce/nm/cefi/cefitest/CC0000009204_500.jks
-#        keyStorePassword: ******
-#        trustStore: D:/work/projects/workspce/nm/cefi/cefitest/CC0000009204_500.jks
-#        keyStorePassword: *****
-#gcaa.security.ssl.key-store: D:/work/projects/workspce/nm/cefi/cefitest/CC0000009204_500.jks
-#gcaa.security.ssl.key-store-password: ******
-#gcaa.security.ssl.trust-store: D:/work/projects/workspce/nm/cefi/cefitest/CC0000009204_500.jks
-#gcaa.security.ssl.trust-store-password: ******
-
-#logging.level.org.springframework.jms=DEBUG
-#logging.level.org.apache.qpid.amqp_1_0=DEBUG
-#logging.level.org.apache.qpid.jms=DEBUG
-#logging.level.org.apache.qpid=DEBUG
-#logging.level.sun.security=DEBUG
-#logging.level.java.lang.security=DEBUG
-#logging.level.javax.net.security=DEBUG
-#logging.level.java.net=DEBUG
-#logging.level.javax.net.debug=DEBUG
-#logging.level.org.apache.qpid.jms.transports.netty=DEBUG
-# logging.level.org.apache.qpid.jms.JmsConnection=ERROR
-#logging.level.com.gcaa.nm=DEBUG
