@@ -26,12 +26,6 @@ logging:
         ws: TRACE
 
 gcaa:
-  #security:
-  #  ssl:
-  #    key-store: D:/work/projects/workspce/nm/cefi/cefitest/CC0000009204_500.jks
-  #    key-store-password: Qq3zlmvD0MTT
-  #    trust-store: D:/work/projects/workspce/nm/cefi/cefitest/CC0000009204_500.jks
-  #    trust-store-password: Qq3zlmvD0MTT            
   nm:
     endpoint-url: https://www.b2b.preops.nm.eurocontrol.int/B2B_PREOPS/gateway/spec/20.5.0
     subchecker:
